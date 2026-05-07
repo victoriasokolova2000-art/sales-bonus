@@ -8,6 +8,9 @@ function calculateSimpleRevenue(purchase, _product) {
   // @TODO: Расчет выручки от операции
   const discount = 1 - purchase.discount / 100;
   return purchase.sale_price * purchase.quantity * discount;
+  if (!purchase.discount || purchase.discount < 0 || purchase.discount > 100) {
+  throw new Error('Некорректный размер скидки');
+}
 }
 
 /**
@@ -38,9 +41,16 @@ function calculateBonusByProfit(index, total, seller) {
  */
 function analyzeSalesData(data, options) {
   // @TODO: Проверка входных данных
-  if (!data || !Array.isArray(data.sellers) || data.sellers.length === 0) {
-    throw new Error("Некорректные входные данные");
+   if (!data || !Array.isArray(data.sellers) || data.sellers.length === 0) {
+    throw new Error('Некорректные входные данные: отсутствует data или sellers');
   }
+  if (!Array.isArray(data.products) || data.products.length === 0) {
+    throw new Error('Некорректные входные данные: отсутствует data.products');
+  }
+  if (!Array.isArray(data.purchase_records) || data.purchase_records.length === 0) {
+    throw new Error('Некорректные входные данные: отсутствует data.purchase_records');
+  }
+  
   // @TODO: Проверка наличия опций
   const { calculateRevenue, calculateBonus } = options;
   if (!calculateRevenue || !calculateBonus) {
@@ -116,6 +126,6 @@ function analyzeSalesData(data, options) {
     profit: Number(seller.profit.toFixed(2)), // Число с двумя знаками после точки, прибыль продавца
     sales_count: seller.sales_count, // Целое число, количество продаж продавца
     top_products: seller.top_products, // Массив объектов вида: { "sku": "SKU_008","quantity": 10}, топ-10 товаров продавца
-    bonus: Number(seller.bonus.toFixed(2)), // Число с двумя знаками после точки, бонус продавца
+    bonus: Number(seller.bonus.toFixed(2)) // Число с двумя знаками после точки, бонус продавца
   }));
 }
