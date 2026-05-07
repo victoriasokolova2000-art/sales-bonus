@@ -104,12 +104,12 @@ function analyzeSalesData(data, options) {
   sellerStats.forEach((seller, index) => {
     seller.bonus = calculateBonus(index, sellerStats.length, seller); // Считаем бонус
     seller.top_products = Object.entries(seller.products_sold)
-      .map(([sku, quantity]) => ({ sku, quantity, product: productIndex[sku] })) // Формируем топ-10 товаров
+      .map(([sku, quantity]) => ({ sku, quantity })) // Формируем топ-10 товаров
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, 10);
   });
   // @TODO: Подготовка итоговой коллекции с нужными полями
-  return sellerStats.map((seller) => ({
+  return sellerStats.map(seller => ({
     seller_id: seller.id, // Строка, идентификатор продавца
     name: seller.name, //Строка, имя продавца
     revenue: Number(seller.revenue.toFixed(2)), // Число с двумя знаками после точки, выручка продавца
